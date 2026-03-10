@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { environment } from '../environments/environment';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-notification',
@@ -10,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class NotificationComponent {
   phone: any;
-  loading = false; 
+  loading = false;
 
   constructor(private route: ActivatedRoute, private http: HttpClient) { }
 
@@ -21,10 +22,10 @@ export class NotificationComponent {
   }
 
   async enableNotifications() {
-    console.log("clicked")
+    // console.log("clicked")
     try {
-      this.loading = true; 
-    
+      this.loading = true;
+
       const registration = await navigator.serviceWorker.register('assets/sw.js');
       await navigator.serviceWorker.ready;
 
@@ -33,16 +34,17 @@ export class NotificationComponent {
         applicationServerKey: this.urlBase64ToUint8Array(environment.VAPID_PUBLIC_KEY)
       });
 
-      await this.http.post(`${environment.SERVER_URL}/subscribe`, {
+
+      await firstValueFrom(this.http.post(`${environment.SERVER_URL}/subscribe`, {
         phone: this.phone,
         subscription
-      }).toPromise();
+      }));
 
-      await this.http.post(`${environment.SERVER_URL}/send`, {
+      await firstValueFrom(this.http.post(`${environment.SERVER_URL}/send`, {
         phone: this.phone,
         title: 'Welcome!',
         body: 'Notifications enabled'
-      }).toPromise();
+      }));
       console.log('Subscribed and test notification sent');
 
     } catch (err) {
