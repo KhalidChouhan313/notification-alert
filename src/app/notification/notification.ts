@@ -21,9 +21,10 @@ export class NotificationComponent {
   }
 
   async enableNotifications() {
+    console.log("clicked")
     try {
       this.loading = true; 
-
+    
       const registration = await navigator.serviceWorker.register('assets/sw.js');
       await navigator.serviceWorker.ready;
 
