@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { environment } from '../environments/environment';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -13,7 +13,11 @@ export class NotificationComponent {
   phone: any;
   loading = false;
 
-  constructor(private route: ActivatedRoute, private http: HttpClient) { }
+  constructor(
+    private route: ActivatedRoute,
+    private http: HttpClient,
+    private cd: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
@@ -22,7 +26,7 @@ export class NotificationComponent {
   }
 
   async enableNotifications() {
-    console.log("clicked")
+    // console.log("clicked")
     try {
       this.loading = true;
 
@@ -44,13 +48,17 @@ export class NotificationComponent {
         title: 'Welcome!',
         body: 'Notifications enabled'
       }));
+      this.loading = false;
       console.log('Subscribed and test notification sent');
 
     } catch (err) {
+      this.loading = false;
       console.error('Subscription failed:', err);
       alert('Notification subscription failed. Check console.');
     } finally {
       this.loading = false;
+      this.cd.detectChanges();
+      console.log("completed")
     }
   }
 
