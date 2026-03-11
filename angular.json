@@ -24,8 +24,8 @@
                 "input": "public"
               },
               "src/favicon.ico",
-  "src/assets",
-   "src/sw.js"
+              "src/assets",
+              "src/sw.js"
             ],
             "styles": [
               "src/styles.css"
